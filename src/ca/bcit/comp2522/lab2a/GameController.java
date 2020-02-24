@@ -36,7 +36,7 @@ public class GameController {
         {
             //DEBUG::::
             //inserted true here to remove turn taking
-            if(true || selectedTemp.getPiece().getTeam().getNum() == turn)
+            if(selectedTemp.getPiece().getTeam().getNum() == turn)
                 selectPiece(selectedTemp);
         } 
         else if (selected != null) //player attempts to move the piece
@@ -53,7 +53,7 @@ public class GameController {
     
     private static boolean movePiece(Tile start, Tile finish) {
         //DEBUG: Debugger to check move data
-        board.debugMove(start, finish);
+        //board.debugMove(start, finish);
         
         //check with rules and return that boolean
         if(Rules.isValidMove(start, finish)) {
