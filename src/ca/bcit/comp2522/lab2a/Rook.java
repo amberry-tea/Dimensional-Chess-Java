@@ -7,6 +7,10 @@ public class Rook extends Piece {
         pieceType = PieceType.ROOK;
     }
     
+    public boolean isValidMove(Tile start, Tile finish) {
+        return GameController.getBoard().moveStraight(start, finish);
+    }
+    
     public Team getTeam() {
         return team;
     }

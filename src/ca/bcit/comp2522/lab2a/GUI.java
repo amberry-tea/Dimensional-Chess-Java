@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -36,20 +37,28 @@ public class GUI extends Application {
 
     public static final int MODE = 1;
 
-    public static final int HEIGHT = 750;
-    public static final int WIDTH = 750;
+    public static final int HEIGHT = 744;
+    public static final int WIDTH = 744;
 
     public static final int GRID_WIDTH = 8;
     public static final int GRID_HEIGHT = 8;
 
     public static final int TILE_WIDTH = WIDTH / GRID_WIDTH;
     public static final int TILE_HEIGHT = HEIGHT / GRID_HEIGHT;
+    
+    /*
+     * Variables to control the visual offset of ghost pieces being
+     * previewed as part of a neighbouring layer in the 3rd dimension
+     */
+    public static final int[] PHASE_DOWN_OFFSET = {};
+    public static final int[] PHASE_UP_OFFSET = {};
 
     private static Color light;
     private static Color dark;
     private static Color lightSelected;
     private static Color darkSelected;
     private static Color selectCircleColor;
+    private static ColorAdjust downColorAdjust;
     /** Array of the points for the grid. */
     // public static Point2D[][] grid;
     private static Rectangle[][] tiles;
@@ -61,8 +70,8 @@ public class GUI extends Application {
     private static ArrayList<Node> onScreen;
 
     /*
-     * The current 2D plane position on the board.
-     * First coordinate represents the position on a 3D board.
+     * The current 2D plane position on the board. First coordinate represents the
+     * position on a 3D board.
      */
     private static int[] dimensionPos;
 
@@ -80,6 +89,7 @@ public class GUI extends Application {
         lightSelected = Color.rgb(174, 177, 135);
         darkSelected = Color.rgb(132, 121, 78);
         selectCircleColor = Color.rgb(126, 191, 94);
+        downColorAdjust = new ColorAdjust(.5,.5,.5,1);
 
         // Instantiate variables here
         dimensionPos = new int[GameController.DIMENSIONS - 1];
@@ -112,13 +122,30 @@ public class GUI extends Application {
     public void update() {
         root.getChildren().clear();
         onScreen = getNodes2D(dimensionPos);
-        if(GameController.hasSelection()) {
+        if (GameController.hasSelection()) {
             onScreen.addAll(showValidMoves(GameController.getSelected()));
         }
-        int[] tempPos = dimensionPos;
-        //if(dimensionPos == 0) {
-            
-        //}
+        int[] tempPos = new int[dimensionPos.length];
+        System.arraycopy(dimensionPos, 0, tempPos, 0, dimensionPos.length);
+        
+        // 3D Phasing rendering
+        /*
+        if (GameController.DIMENSIONS > 2) {
+            if (tempPos[0] == 0) 
+            {
+                tempPos[0]++;
+                onScreen.addAll(getPieces2D(tempPos, darkSelected));
+            } 
+            else if (tempPos[0] != GameController.DIMENSIONS - 1) 
+            {
+                tempPos[0]++;
+                onScreen.addAll(getPieces2D(tempPos, darkSelected));
+                tempPos[0] -= 2;
+                onScreen.addAll(getPieces2D(tempPos, darkSelected));
+            }
+        }
+        */
+        
         for (Node n : onScreen) {
             root.getChildren().add(n);
         }
@@ -128,15 +155,15 @@ public class GUI extends Application {
         onScreen.add(n);
         return onScreen.size();
     }
-    
+
     public ArrayList<Node> showValidMoves(Tile a) {
         ArrayList<Node> screen = new ArrayList<Node>();
         Tile[][] boardTiles = GameController.getBoard().getTiles2D(dimensionPos);
         selectCircles = new Circle[GRID_WIDTH][GRID_HEIGHT];
-        
-        for(int c = 0; c < boardTiles.length; c++) {
-            for(int r = 0; r < boardTiles[0].length; r++) {
-                if(Rules.isValidMove(a, boardTiles[c][r])) {
+
+        for (int c = 0; c < boardTiles.length; c++) {
+            for (int r = 0; r < boardTiles[0].length; r++) {
+                if (Rules.isValidMove(a, boardTiles[c][r])) {
                     Circle dot = new Circle(c * TILE_WIDTH + (TILE_WIDTH / 2), r * TILE_HEIGHT + (TILE_HEIGHT / 2), 15);
                     dot.setFill(selectCircleColor);
                     selectCircles[c][r] = dot;
@@ -149,8 +176,8 @@ public class GUI extends Application {
 
     public void mousePressed(MouseEvent event) {
         if ((int) (event.getX() / TILE_WIDTH) < tiles.length && (int) (event.getY() / TILE_HEIGHT) < tiles[0].length) {
-            
-            int[] mousePos = { (int) (event.getX() / TILE_WIDTH), (int) (event.getY() / TILE_HEIGHT), dimensionPos[0]};
+
+            int[] mousePos = { (int) (event.getX() / TILE_WIDTH), (int) (event.getY() / TILE_HEIGHT), dimensionPos[0] };
             Rectangle tileClicked = tiles[mousePos[0]][mousePos[1]];
             Color c = (Color) tileClicked.getFill();
             if (c.equals(dark)) {
@@ -166,16 +193,16 @@ public class GUI extends Application {
             System.out.println("Clicked out of bounds!");
         }
     }
-    
+
     public void keyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.RIGHT) {
-            if(dimensionPos[0] < GameController.HEIGHT) {
+            if (dimensionPos[0] < GameController.HEIGHT) {
                 dimensionPos[0]++;
                 update();
             }
         }
         if (event.getCode() == KeyCode.LEFT) {
-            if(dimensionPos[0] > 0) {
+            if (dimensionPos[0] > 0) {
                 dimensionPos[0]--;
                 update();
             }
@@ -227,8 +254,8 @@ public class GUI extends Application {
         }
         return screen;
     }
-    
-    private ArrayList<Node> getPieces2D(int[] dimensionPosition, Color color){
+
+    private ArrayList<Node> getPieces2D(int[] dimensionPosition, Color color) {
         ArrayList<Node> screen = new ArrayList<Node>();
         Tile[][] boardTiles = GameController.getBoard().getTiles2D(dimensionPosition);
 
@@ -239,6 +266,7 @@ public class GUI extends Application {
                     ImageView img = new ImageView(getImage(piece.getTeam().getChar() + piece.getName()));
                     img.setX(c * TILE_WIDTH);
                     img.setY(r * TILE_HEIGHT);
+                    //img.setEffect(downColorAdjust);
                     screen.add(img);
                 }
             }

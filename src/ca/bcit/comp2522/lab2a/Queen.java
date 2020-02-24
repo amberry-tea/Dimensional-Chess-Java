@@ -18,5 +18,10 @@ public class Queen extends Piece {
     public String getName() {
         return pieceType.getName();
     }
+
+    @Override
+    protected boolean isValidMove(Tile start, Tile finish) {
+        return (GameController.getBoard().moveStraight(start, finish) || GameController.getBoard().moveDiagonal(start, finish));
+    }
     
 }

@@ -1,13 +1,20 @@
 package ca.bcit.comp2522.lab2a;
 
+/**
+ * The main controller of the game components.
+ * <p>
+ * Controls piece selection and movement using the GUI and Rules classes.
+ * 
+ * @author Andrew Martin
+ * @version 2020.02.23
+ */
 public class GameController {
     public static final int SIZE = 8;
     public static final int DIMENSIONS = 3;
     public static final int HEIGHT = 2;
     
-    private static Rules rules = new Rules(SIZE, DIMENSIONS);
     //private static Board board = new Board(SIZE, DIMENSIONS);
-    private static Board board = rules.getPiecePlacement2D();
+    private static Board board = Rules.getPiecePlacement(SIZE, DIMENSIONS);
     private static Tile selected;
     private static GUI gui = new GUI();
     //who's turn it is
@@ -25,12 +32,14 @@ public class GameController {
         //System.out.println("TileCoords: " + board.getTile(mousePos).x + " " + board.getTile(mousePos).y);
         
         Tile selectedTemp = board.getTile(mousePos);
-        if(selected == null && selectedTemp.hasPiece()) 
+        if(selected == null && selectedTemp.hasPiece()) //player selects a piece
         {
-            if(selectedTemp.getPiece().getTeam().getNum() == turn)
+            //DEBUG::::
+            //inserted true here to remove turn taking
+            if(true || selectedTemp.getPiece().getTeam().getNum() == turn)
                 selectPiece(selectedTemp);
         } 
-        else if (selected != null) 
+        else if (selected != null) //player attempts to move the piece
         {
             if(movePiece(selected, selectedTemp)) {
                 turnNum++;
@@ -43,8 +52,14 @@ public class GameController {
     }
     
     private static boolean movePiece(Tile start, Tile finish) {
+        //DEBUG: Debugger to check move data
+        board.debugMove(start, finish);
+        
         //check with rules and return that boolean
-        if(rules.isValidMove(start, finish)) {
+        if(Rules.isValidMove(start, finish)) {
+            if(selected.getPiece().getPieceType() == PieceType.PAWN) {
+                ((Pawn)selected.getPiece()).setMoved();
+            }
             finish.setPiece(start.removePiece());
             selected = null;
             gui.update();

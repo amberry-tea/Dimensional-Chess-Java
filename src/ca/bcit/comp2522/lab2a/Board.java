@@ -1,5 +1,16 @@
 package ca.bcit.comp2522.lab2a;
 
+/**
+ * Stores and retrieves Tile objects, which contain pieces. 
+ * Also contains and manages information about the board and its set up.
+ * <p>
+ * Uses a one dimensional array to store all the tiles on the board, and divides up
+ * the dimensions procedurally depending on the number of dimensions and the size of the
+ * board.
+ * 
+ * @author Andrew Martin
+ * @version 2020.02.23
+ */
 public class Board {
     Tile[] tiles;
     int dimensions;
@@ -96,7 +107,6 @@ public class Board {
         // index through size^2 tiles and add each one to its corresponding
         // coordinates in a 2D array
         for (int i = index; i < index + Math.pow(size, 2); i++) {
-            //ans[i % size][(i - index) / size] = tiles[i + index];
             ans[i % size][(i - index) / size] = tiles[i];
             
         }
@@ -108,5 +118,134 @@ public class Board {
         Piece replaced = temp.getPiece();
         temp.setPiece(piece);
         return "" + piece.getPieceType().getName() + " was placed on " + temp.x + ", " + temp.y + ", " + temp.z;
+    }
+    
+    /**
+     * Gets a vector representing the change in position.
+     * @param a The first tile
+     * @param b The second tile
+     * @return The distance between the two tiles
+     */
+    public int[] getMovement(Tile a, Tile b) {
+        int[] aPos = getPos(a);
+        int[] bPos = getPos(b);
+        int[] movement = new int[aPos.length];
+
+        for (int i = 0; i < aPos.length; i++) {
+            movement[i] = aPos[i] - bPos[i];
+        }
+
+        return movement;
+    }
+    
+    public boolean moveStraight(Tile a, Tile b) {
+        int[] startPos = getPos(a);
+        int[] finishPos = getPos(b);
+        int[] movement = getMovement(a, b);
+        int axis = -1;
+
+        // for loop retrieves the axis of movement for the rook
+        for (int i = 0; i < startPos.length; i++) {
+            if (startPos[i] != finishPos[i]) {
+                // check if the axis has not been changed. if changed, return false (not
+                // straight movement)
+                if (axis == -1) {
+                    axis = i;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        int directionVector = movement[axis] > 0 ? 1 : -1;
+
+        // for loop that loops through the absolute distance between the start and
+        // finish on axis
+        // subtract 1 from the absolute distance, as to not check the tile that the tile
+        // moves to
+        for (int i = 0; i < Math.abs(movement[axis]); i++) {
+            startPos[axis] -= directionVector;
+            if (getTile(startPos).hasPiece() && startPos[axis] != finishPos[axis]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public boolean moveDiagonal(Tile a, Tile b) {
+        int[] startPos = getPos(a);
+        int[] finishPos = getPos(b);
+        int[] movement = getMovement(a, b);
+        //the distance traveled diagonally
+        Integer length = null;
+        //the number of axis that the piece travels on.
+        //returns false if more than 2
+        int axisCount = 0;
+        
+        //the dimension of the first axis traveled
+        int axisA = 0;
+        //the dimension of the second axis traveled
+        int axisB = 0;
+        
+        //TODO: Use length to verify that the movement along the two axis of travel are of equal length. Then use the movement vector to choose a direction to go along and test each tile.
+
+        // for loop retrieves the axis of movement for the rook
+        for (int i = 0; i < movement.length; i++) {
+            // if there is movement on the axis 'i'
+            if (startPos[i] != finishPos[i]) {
+                
+                axisCount++;
+                
+                //set axis 1 to the fist axis traveled along, then set the second axis to the next axis traveled on.
+                if(axisA == 0) {
+                    axisA = i;
+                } else {
+                    axisB = i;
+                }
+                
+                if(length != null && length != Math.abs(movement[i])) {
+                    return false; //if its already set, return false.
+                } else if (length == null) {
+                    length = Math.abs(movement[i]); //sets the distance traveled if it is not already set
+                }
+                
+            }
+        }
+        
+        //if the number of axis traveled along is greater than 2
+        if(axisCount != 2)
+            return false;
+        
+        int[] directionVector = new int[2];
+        directionVector[0] = movement[axisA] > 0 ? 1 : -1;
+        directionVector[1] = movement[axisB] > 0 ? 1 : -1;
+        
+        for (int i = 0; i < length; i++) {
+            startPos[axisA] -= directionVector[0];
+            startPos[axisB] -= directionVector[1];
+            if (getTile(startPos).hasPiece() && startPos[axisA] != finishPos[axisA]) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    public void debugMove(Tile start, Tile finish) {
+        int[] movement = getMovement(start, finish);
+        int[] startPos = getPos(start);
+        int[] finishPos = getPos(finish);
+
+        if (dimensions == 2) {
+            System.out.println("Start tile coordinates x:" + startPos[0] + " y:" + startPos[1]);
+            System.out.println("Finish tile coordinates x:" + finishPos[0] + " y:" + finishPos[1]);
+            System.out.println("Vector for movement x:" + movement[0] + " y:" + movement[1]);
+        } else {
+            System.out.println("Start tile coordinates x:" + startPos[0] + " y:" + startPos[1]);
+            System.out.println("Finish tile coordinates x:" + finishPos[0] + " y:" + finishPos[1]);
+            System.out.println("Vector for movement x:" + movement[0] + " y:" + movement[1] + " z:" + movement[2]);
+        }
+
+        System.out.println();
     }
 }
