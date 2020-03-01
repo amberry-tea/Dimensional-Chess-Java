@@ -13,10 +13,18 @@ package ca.bcit.comp2522.lab2a;
  * @version 2020.02.23
  */
 public class Rules {
-    // Constructs and returns a board with pieces in the appropriate slots.
-    public static Board getPiecePlacement(int size, int dimensions) {
-        Board board;
-        board = new Board(size, dimensions);
+    /**
+     * Constructs and returns a board with pieces in the appropriate slots.
+     * 
+     * @param size 
+     *      The size of the board.
+     * @param dimensions 
+     *      The number of dimensions the board has.
+     * @return A board with the pieces set in their starting places.
+     */
+    public static BCITBoard getPiecePlacement(int size, int dimensions) {
+        BCITBoard board;
+        board = new BCITBoard(size, dimensions);
 
         if (dimensions == 2 && size == 8) {
             /*
@@ -43,7 +51,7 @@ public class Rules {
             for (int c = 0; c < size; c++) {
                 pos[0] = c;
                 pos[1] = 1;
-                board.getTile(pos).setPiece(new Pawn(Team.BLACK));
+                board.getTile(pos).setPiece(new BCITPawn(Team.BLACK));
             }
 
             for (int c = 0; c < size; c++) {
@@ -65,7 +73,7 @@ public class Rules {
             for (int c = 0; c < size; c++) {
                 pos[0] = c;
                 pos[1] = 6;
-                board.getTile(pos).setPiece(new Pawn(Team.WHITE));
+                board.getTile(pos).setPiece(new BCITPawn(Team.WHITE));
             }
 
         } else if (dimensions == 3 && size == 8) {
@@ -95,7 +103,7 @@ public class Rules {
                 pos[0] = c;
                 pos[1] = 1;
                 pos[2] = 0;
-                board.putPiece(pos, new Pawn(Team.BLACK));
+                board.putPiece(pos, new BCITPawn(Team.BLACK));
             }
 
             for (int c = 0; c < size; c++) {
@@ -119,7 +127,7 @@ public class Rules {
                 pos[0] = c;
                 pos[1] = 6;
                 pos[2] = 2;
-                board.getTile(pos).setPiece(new Pawn(Team.WHITE));
+                board.getTile(pos).setPiece(new BCITPawn(Team.WHITE));
             }
 
         } else {
@@ -129,6 +137,18 @@ public class Rules {
         return board;
     }
 
+    /**
+     * Gets a piece and checks its isValidMove function to determine
+     * if the piece can be moved.
+     * 
+     * @param <P> 
+     *      Generic type to hold a piece
+     * @param start 
+     *      The tile that the piece starts on.
+     * @param finish 
+     *      The tile that is requested to move to.
+     * @return True if the move is valid
+     */
     public static <P extends Piece> boolean isValidMove(Tile start, Tile finish) {
         P piece = (P) start.getPiece();
         // only check move if finish tile is empty or has enemy piece on it

@@ -14,7 +14,7 @@ public class GameController {
     public static final int HEIGHT = 2;
     
     //private static Board board = new Board(SIZE, DIMENSIONS);
-    private static Board board = Rules.getPiecePlacement(SIZE, DIMENSIONS);
+    private static BCITBoard board = Rules.getPiecePlacement(SIZE, DIMENSIONS);
     private static Tile selected;
     private static GUI gui = new GUI();
     //who's turn it is
@@ -22,7 +22,7 @@ public class GameController {
     //how many turns have passed since the start of the game
     private static int turnNum;
     
-    public static Board getBoard() {
+    public static BCITBoard getBoard() {
         return board;
     }
     
@@ -36,7 +36,7 @@ public class GameController {
         {
             //DEBUG::::
             //inserted true here to remove turn taking
-            if(selectedTemp.getPiece().getTeam().getNum() == turn)
+            if(true || selectedTemp.getPiece().getTeam().getNum() == turn)
                 selectPiece(selectedTemp);
         } 
         else if (selected != null) //player attempts to move the piece

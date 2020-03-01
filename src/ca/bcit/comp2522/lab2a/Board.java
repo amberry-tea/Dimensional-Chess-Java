@@ -13,9 +13,9 @@ package ca.bcit.comp2522.lab2a;
  */
 public class Board {
     Tile[] tiles;
-    int dimensions;
-    int size;
-    int arraySize;
+    private int dimensions;
+    private int size;
+    private int arraySize;
 
     public Board(int size, int dimensions) {
         this.dimensions = dimensions;
@@ -24,7 +24,6 @@ public class Board {
         tiles = new Tile[arraySize];
 
         for (int i = 0; i < (int) arraySize; i++) {
-            //POSSIBLY INACCURATE XYZ VALUES: BE WARY
             tiles[i] = new Tile(i % size, i / (int)Math.pow(size, dimensions-1), i / (int)Math.pow(size, dimensions));
         }
     }

@@ -21,7 +21,7 @@ public class Knight extends Piece {
 
     @Override
     protected boolean isValidMove(Tile start, Tile finish) {
-        Board board = GameController.getBoard();
+        BCITBoard board = GameController.getBoard();
         int[] startPos = board.getPos(start);
         int[] finishPos = board.getPos(finish);
         int[] movement = board.getMovement(start, finish);

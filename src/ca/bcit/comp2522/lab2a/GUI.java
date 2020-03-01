@@ -55,10 +55,8 @@ public class GUI extends Application {
 
     private static Color light;
     private static Color dark;
-    private static Color lightSelected;
-    private static Color darkSelected;
     private static Color selectCircleColor;
-    private static ColorAdjust downColorAdjust;
+    //private static ColorAdjust downColorAdjust;
     /** Array of the points for the grid. */
     // public static Point2D[][] grid;
     private static Rectangle[][] tiles;
@@ -86,11 +84,8 @@ public class GUI extends Application {
         root = new Group();
         light = Color.rgb(240, 217, 181);
         dark = Color.rgb(181, 136, 99);
-        lightSelected = Color.rgb(174, 177, 135);
-        darkSelected = Color.rgb(132, 121, 78);
         selectCircleColor = Color.rgb(126, 191, 94);
-        downColorAdjust = new ColorAdjust(.5,.5,.5,1);
-
+        
         // Instantiate variables here
         dimensionPos = new int[GameController.DIMENSIONS - 1];
         dimensionPos[0] = 0;
@@ -122,29 +117,34 @@ public class GUI extends Application {
     public void update() {
         root.getChildren().clear();
         onScreen = getNodes2D(dimensionPos);
+        
+        // 3D Phasing rendering
+        if (GameController.DIMENSIONS > 2) {
+            int[] tempPos = new int[dimensionPos.length];
+            System.arraycopy(dimensionPos, 0, tempPos, 0, dimensionPos.length);
+            int i = 1;
+            
+            while(tempPos[0] < GameController.DIMENSIONS - 1) {
+                tempPos[0]++;
+                onScreen.addAll(getPieces2D(tempPos, i, Color.hsb(.3, .5, .5)));
+                i++;
+            }
+            
+            System.arraycopy(dimensionPos, 0, tempPos, 0, dimensionPos.length);
+            i = -1;
+            
+            while(tempPos[0] > 0) {
+                tempPos[0]--;
+                onScreen.addAll(getPieces2D(tempPos, i, Color.GRAY));
+                i--;
+            }
+            
+        }
+
         if (GameController.hasSelection()) {
             onScreen.addAll(showValidMoves(GameController.getSelected()));
         }
-        int[] tempPos = new int[dimensionPos.length];
-        System.arraycopy(dimensionPos, 0, tempPos, 0, dimensionPos.length);
         
-        // 3D Phasing rendering
-        /*
-        if (GameController.DIMENSIONS > 2) {
-            if (tempPos[0] == 0) 
-            {
-                tempPos[0]++;
-                onScreen.addAll(getPieces2D(tempPos, darkSelected));
-            } 
-            else if (tempPos[0] != GameController.DIMENSIONS - 1) 
-            {
-                tempPos[0]++;
-                onScreen.addAll(getPieces2D(tempPos, darkSelected));
-                tempPos[0] -= 2;
-                onScreen.addAll(getPieces2D(tempPos, darkSelected));
-            }
-        }
-        */
         
         for (Node n : onScreen) {
             root.getChildren().add(n);
@@ -255,18 +255,20 @@ public class GUI extends Application {
         return screen;
     }
 
-    private ArrayList<Node> getPieces2D(int[] dimensionPosition, Color color) {
+    private ArrayList<Node> getPieces2D(int[] dimensionPosition, int position, Color color) {
         ArrayList<Node> screen = new ArrayList<Node>();
         Tile[][] boardTiles = GameController.getBoard().getTiles2D(dimensionPosition);
-
+        ColorAdjust colorAdjust;
         for (int c = 0; c < GRID_WIDTH; c++) {
             for (int r = 0; r < GRID_HEIGHT; r++) {
                 if (boardTiles[c][r].hasPiece()) {
                     Piece piece = boardTiles[c][r].getPiece();
                     ImageView img = new ImageView(getImage(piece.getTeam().getChar() + piece.getName()));
-                    img.setX(c * TILE_WIDTH);
-                    img.setY(r * TILE_HEIGHT);
-                    //img.setEffect(downColorAdjust);
+                    img.setX(c * TILE_WIDTH + position * (TILE_WIDTH / (GameController.HEIGHT * 10)) );
+                    img.setY(r * TILE_HEIGHT + position * (TILE_HEIGHT / (GameController.HEIGHT * 10)) );
+                    colorAdjust = new ColorAdjust(color.getHue() * 2 - 1, color.getSaturation() * 2 - 1, color.getBrightness() * 2 - 1, 1);
+                    img.setEffect(colorAdjust);    
+                    img.setStyle("-fx-opacity: " + ( 1/ (Math.pow(position, 2) + 1) ));
                     screen.add(img);
                 }
             }

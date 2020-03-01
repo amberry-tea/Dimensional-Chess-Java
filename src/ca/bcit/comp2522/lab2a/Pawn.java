@@ -19,10 +19,10 @@ public class Pawn extends Piece {
     }
     
     public boolean isValidMove(Tile start, Tile finish) {
-        Board board = GameController.getBoard();
+        BCITBoard board = GameController.getBoard();
 
         // If the pawn has moved
-        boolean twoStep = !(((Pawn) (start.getPiece())).hasMoved());
+        boolean twoStep = !moved;
         int[] movement = board.getMovement(start, finish);
 
         // the total distance in all axis that the piece wants to move

@@ -1,8 +1,8 @@
 package ca.bcit.comp2522.lab2a;
 
-public class King extends Piece {
+public class MathematicKing extends Piece {
     
-    public King(Team team) {
+    public MathematicKing(Team team) {
         super(team);
         pieceType = PieceType.KING;
     }
@@ -21,7 +21,7 @@ public class King extends Piece {
 
     @Override
     protected boolean isValidMove(Tile start, Tile finish) {
-        BCITBoard board = GameController.getBoard();
+        Board board = GameController.getBoard();
         int[] startPos = board.getPos(start);
         int[] finishPos = board.getPos(finish);
         
