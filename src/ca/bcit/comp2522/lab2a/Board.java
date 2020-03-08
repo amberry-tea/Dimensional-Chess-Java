@@ -17,6 +17,13 @@ public class Board {
     private int size;
     private int arraySize;
 
+    /**
+     * Constructor for a Board object
+     * @param size 
+     *      The size of the board
+     * @param dimensions 
+     *      The number of dimensions the board is in
+     */
     public Board(int size, int dimensions) {
         this.dimensions = dimensions;
         this.size = size;
@@ -31,7 +38,8 @@ public class Board {
     /**
      * Converts a vector into its index in the tiles array
      * 
-     * @param vector The coordinates to convert to index
+     * @param vector 
+     *      The coordinates to convert to index
      * @return The index equivalent for the tiles array
      */
     private int vectorToIndex(int[] vector) {
@@ -45,7 +53,8 @@ public class Board {
     /**
      * Converts an index in the tiles array to a vector.
      * 
-     * @param index The index in the array to convert to coordinates
+     * @param index 
+     *      The index in the array to convert to coordinates
      * @return The coordinates at the provided index
      */
     private int[] indexToVector(int index) {
@@ -77,11 +86,13 @@ public class Board {
      * Takes the coordinates of a dimension greater than 2, and returns the 2d plane
      * at those coordinates.
      * 
-     * @param position The coordinates of the 2D plane in a higher dimension. Eg.
-     *                 The 2D plane at the bottom of a 3D chess board would be at
-     *                 {0}, whereas the plane above that would be {1}. More indexes
-     *                 of the array are for more dimensions.
+     * @param position 
+     *      The coordinates of the 2D plane in a higher dimension. Eg.
+     *      The 2D plane at the bottom of a 3D chess board would be at
+     *      {0}, whereas the plane above that would be {1}. More indexes
+     *      of the array are for more dimensions.
      * @return
+     *      A 2D cross section of the board in a 2D array of tiles
      */
     public Tile[][] getTiles2D(int[] position) {
         Tile[][] ans = new Tile[size][size];
@@ -121,8 +132,10 @@ public class Board {
     
     /**
      * Gets a vector representing the change in position.
-     * @param a The first tile
-     * @param b The second tile
+     * @param a 
+     *      The first tile
+     * @param b 
+     *      The second tile
      * @return The distance between the two tiles
      */
     public int[] getMovement(Tile a, Tile b) {
@@ -137,6 +150,15 @@ public class Board {
         return movement;
     }
     
+    /**
+     * Calculates a pieces movement along 1 axis.
+     * 
+     * @param a 
+     *      The start tile of the piece
+     * @param b 
+     *      The piece where the tile lands
+     * @return True if it is a straight line.
+     */
     public boolean moveStraight(Tile a, Tile b) {
         int[] startPos = getPos(a);
         int[] finishPos = getPos(b);
@@ -171,6 +193,16 @@ public class Board {
         return true;
     }
     
+    /**
+     * Calculates a pieces movement if it is traveling
+     * along 2 axis.
+     * 
+     *  @param a 
+     *      The start tile of the piece
+     * @param b 
+     *      The piece where the tile lands
+     * @return True if it is a diagonal line.
+     */
     public boolean moveDiagonal(Tile a, Tile b) {
         int[] startPos = getPos(a);
         int[] finishPos = getPos(b);
@@ -230,6 +262,15 @@ public class Board {
         return true;
     }
     
+    /**
+     * Debug function to check what a move is doing. Prints
+     * info to the console.
+     * 
+     * @param start
+     *      The start tile of the move
+     * @param finish
+     *      The finish tile of the move
+     */
     public void debugMove(Tile start, Tile finish) {
         int[] movement = getMovement(start, finish);
         int[] startPos = getPos(start);

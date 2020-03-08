@@ -42,9 +42,9 @@ public class Rules {
                 } else if (c == 2 || c == 5) {
                     board.putPiece(pos, new Bishop(Team.BLACK));
                 } else if (c == 3) {
-                    board.putPiece(pos, new King(Team.BLACK));
+                    board.putPiece(pos, new Queen(Team.BLACK));
                 } else if (c == 4) {
-                    board.getTile(pos).setPiece(new Queen(Team.BLACK));
+                    board.getTile(pos).setPiece(new King(Team.BLACK));
                 }
             }
 
@@ -64,9 +64,9 @@ public class Rules {
                 } else if (c == 2 || c == 5) {
                     board.putPiece(pos, new Bishop(Team.WHITE));
                 } else if (c == 3) {
-                    board.putPiece(pos, new King(Team.WHITE));
-                } else if (c == 4) {
                     board.putPiece(pos, new Queen(Team.WHITE));
+                } else if (c == 4) {
+                    board.putPiece(pos, new King(Team.WHITE));
                 }
             }
 
@@ -93,9 +93,9 @@ public class Rules {
                 } else if (c == 2 || c == 5) {
                     board.putPiece(pos, new Bishop(Team.BLACK));
                 } else if (c == 3) {
-                    board.putPiece(pos, new King(Team.BLACK));
+                    board.putPiece(pos, new Queen(Team.BLACK));
                 } else if (c == 4) {
-                    board.getTile(pos).setPiece(new Queen(Team.BLACK));
+                    board.getTile(pos).setPiece(new King(Team.BLACK));
                 }
             }
 
@@ -117,9 +117,9 @@ public class Rules {
                 } else if (c == 2 || c == 5) {
                     board.putPiece(pos, new Bishop(Team.WHITE));
                 } else if (c == 3) {
-                    board.putPiece(pos, new King(Team.WHITE));
-                } else if (c == 4) {
                     board.putPiece(pos, new Queen(Team.WHITE));
+                } else if (c == 4) {
+                    board.putPiece(pos, new King(Team.WHITE));
                 }
             }
 
